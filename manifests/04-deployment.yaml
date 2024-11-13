@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-taint-controller
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node-taint-controller
+  template:
+    metadata:
+      labels:
+        app: node-taint-controller
+    spec:
+      serviceAccountName: node-taint-controller-sa
+      containers:
+        - name: node-taint-controller
+          image: orlandobrea/node-taint-controller:v1.9  # Cambia esto a la imagen de tu controlador
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+          env:
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
